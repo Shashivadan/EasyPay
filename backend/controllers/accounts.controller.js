@@ -6,7 +6,7 @@ async function balance(req, res) {
 
   if (!account) {
     return res.status(411).json({
-      message: "nan",
+      message: NaN,
     });
   }
   console.log(account);
