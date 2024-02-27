@@ -1,7 +1,9 @@
+import Routing from "./utils/Routing";
+
 function App() {
   return (
     <>
-      <h1>shashi</h1>
+      <Routing />
     </>
   );
 }
