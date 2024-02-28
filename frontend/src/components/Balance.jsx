@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 export const Balance = ({ value }) => {
   return (
     <div className="flex">

@@ -6,12 +6,27 @@ import {
   BottomWarning,
   Button,
 } from "../components/Index";
+import axios from "../utils/AxiosBaseUrl";
 
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 function SignIn() {
   const { register, handleSubmit } = useForm();
+  const navigate = useNavigate();
 
-  const formData = handleSubmit((data) => console.log(data));
+  const formData = handleSubmit(async (data) => {
+    try {
+      console.log(data);
+      const response = await axios.post("/user/signin", data);
+      const responseData = await response.data;
+      localStorage.setItem("token", responseData.token);
+      if (responseData.token) {
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  });
 
   return (
     <>
@@ -27,7 +42,7 @@ function SignIn() {
                 placeholder="harkirat@gmail.com"
                 label={"Email"}
                 register={register}
-                inputName={"email"}
+                inputName={"username"}
               />
               <InputBox
                 placeholder="123456"

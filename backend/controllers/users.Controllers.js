@@ -55,6 +55,7 @@ async function SignUp(req, res) {
     const token = Jwt.sign({ userId }, process.env.JWT_KEY);
 
     return res.status(200).json({
+      massage: "successfully create a newuser",
       token: token,
     });
   } catch (error) {
@@ -152,13 +153,20 @@ async function updateUser(req, res) {
 async function bluk(req, res) {
   const filter = req.query.filter;
 
-  if (!filter) {
-    return res.status(404).json({
-      massage: "no users",
-    });
-  }
-
   try {
+    if (!filter || filter == "") {
+      const allUsers = await Users.find({});
+      return res.status(202).json({
+        users: allUsers.map((user) => {
+          return {
+            firstname: user.firstname,
+            lastname: user.lastname,
+            _id: user._id,
+          };
+        }),
+      });
+    }
+
     const users = await Users.find({
       $or: [
         {
@@ -183,7 +191,12 @@ async function bluk(req, res) {
         };
       }),
     });
-  } catch (error) {}
+  } catch (error) {
+    return res.status(411).json({
+      massage: "database not working for some reason",
+      error,
+    });
+  }
 }
 
 export { SignUp, SignIn, updateUser, bluk };

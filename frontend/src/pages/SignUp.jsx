@@ -8,13 +8,28 @@ import {
 } from "../components/Index";
 
 import { useForm } from "react-hook-form";
+import Instance from "../utils/AxiosBaseUrl";
+
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function SignUp() {
   const { register, handleSubmit, reset } = useForm();
+  const navigate = useNavigate();
 
-  const formData = handleSubmit((data) => {
-    console.log(data);
-    reset();
+  const formData = handleSubmit(async (data) => {
+    try {
+      const response = await Instance.post("/user/signup", data);
+
+      console.log(response.data);
+      localStorage.setItem("token", response.data.token);
+      reset();
+      if (response.data.token) {
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      console.error("Error in API request:", error.response.data);
+    }
   });
 
   return (
@@ -43,7 +58,7 @@ function SignUp() {
                 register={register}
                 placeholder={"Email"}
                 label={"Email"}
-                inputName={"email"}
+                inputName={"username"}
               />
               <InputBox
                 type="Password"

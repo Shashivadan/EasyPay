@@ -9,7 +9,6 @@ async function balance(req, res) {
       message: NaN,
     });
   }
-  console.log(account);
   return res.status(200).json({
     balance: account.balance,
   });
@@ -19,12 +18,18 @@ async function transfer(req, res) {
   const receiverAccountId = req.body.to;
   const amount = req.body.amount;
 
+  if (!receiverAccountId || !amount) {
+    return res.status(411).json({
+      massage: "transaction failed",
+    });
+  }
+
   const session = await mongoose.startSession();
   await session.startTransaction();
 
   try {
-    if (!receiverAccountId || !amount) {
-      session.abortTransaction();
+    if (!receiverAccountId || !amount || amount == "") {
+      await session.abortTransaction();
       await session.endSession();
       return res.json(411).json({
         massage: "transaction failed",
@@ -34,7 +39,7 @@ async function transfer(req, res) {
     const senderAccount = await Accounts.findOne({ userId: req.userId });
 
     if (senderAccount.balance < amount) {
-      session.abortTransaction();
+      await session.abortTransaction();
       await session.endSession();
       return res.status(400).json({
         message: "Insufficient balance",
@@ -46,7 +51,7 @@ async function transfer(req, res) {
     });
 
     if (!receiverAccount) {
-      session.abortTransaction();
+      await session.abortTransaction();
       await session.endSession();
       return res.status(400).json({
         message: "Invalid account",
@@ -70,7 +75,6 @@ async function transfer(req, res) {
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
-    console.log(error);
     return res.status(400).json({
       massage: "Transaction failed",
     });
