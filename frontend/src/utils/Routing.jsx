@@ -1,5 +1,5 @@
 import React from "react";
-import { Dashboard, SendMoney, SignIn, SignUp } from "../pages/Index";
+import { Dashboard, SendMoney, SignIn, SignUp, Error } from "../pages/Index";
 import { Route, Routes } from "react-router-dom";
 function Routing() {
   return (
@@ -9,6 +9,7 @@ function Routing() {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/send" element={<SendMoney />} />
+        <Route path="*" element={<Error />}></Route>
       </Routes>
     </>
   );

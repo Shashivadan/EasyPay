@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useParams, useSearchParams } from "react-router-dom";
 import Instance from "../utils/AxiosBaseUrl";
+import toast from "react-hot-toast";
 
 export const SendMoney = () => {
   // const { search } = useLocation();
@@ -20,8 +21,13 @@ export const SendMoney = () => {
       });
       const data = response.data;
       console.log(data);
+      if (data) {
+        toast.success("transaction Successfully");
+      }
+      setAmount(0);
     } catch (error) {
-      console.log(error.response.data);
+      // console.log(error.response.data);
+      toast.error("transaction failed");
     }
   };
 
@@ -48,6 +54,7 @@ export const SendMoney = () => {
                   Amount (in Rs)
                 </label>
                 <input
+                  value={amount}
                   required
                   type="number"
                   className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"

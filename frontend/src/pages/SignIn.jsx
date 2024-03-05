@@ -7,6 +7,7 @@ import {
   Button,
 } from "../components/Index";
 import axios from "../utils/AxiosBaseUrl";
+import toast from "react-hot-toast";
 
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -21,10 +22,13 @@ function SignIn() {
       const responseData = await response.data;
       localStorage.setItem("token", responseData.token);
       if (responseData.token) {
+        toast.success("Login successful");
         navigate("/dashboard");
       }
     } catch (error) {
       console.log(error);
+
+      toast.error("Wrong email or password");
     }
   });
 
